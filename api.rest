@@ -2,10 +2,21 @@ GET http://localhost:5000/
 
 ###
 
-POST http://localhost:5000/register
-
+POST http://localhost:5000/signup  
 Content-Type: application/json
 
 {
-  "name":"sgsg",
+  "name":"test1",
+  "email":"test1@test.com",
+  "password":"password"
+}
+
+###
+
+POST http://localhost:5000/login
+Content-Type: application/json
+
+{
+  "email":"test1@test.com",
+  "password":"password"
 }
