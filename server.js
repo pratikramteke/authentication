@@ -1,14 +1,16 @@
-import app from "./src/app.js"
-import config from "./src/config/config.js"
-import connectToDB from "./src/database.js"
-import User from "./src/models/user.model.js"
+import app from "./app.js"
+import config from "./config/config.js"
+import connectToDB from "./database.js"
+import User from "./models/user.model.js"
 import bcryptjs from "bcryptjs"
 
 connectToDB()
 
+app.set("view engine", "ejs")
+
 app.get("/", async (req, res) => {
   const user = await User.find()
-  res.json(user)
+  res.render("login")
 })
 
 app.post("/signup", async (req, res) => {
@@ -31,6 +33,7 @@ app.post("/signup", async (req, res) => {
 })
 
 app.post("/login", async (req, res) => {
+  // res.render('')
   try {
     const { email, password } = req.body
 
