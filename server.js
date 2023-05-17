@@ -3,14 +3,30 @@ import config from "./config/config.js"
 import connectToDB from "./database.js"
 import User from "./models/user.model.js"
 import bcryptjs from "bcryptjs"
+import jwt from "jsonwebtoken"
 
 connectToDB()
 
+// setting up view enigne
 app.set("view engine", "ejs")
 
-app.get("/", async (req, res) => {
-  const user = await User.find()
-  res.render("login")
+const isAuthenticated = async (req, res, next) => {
+  const { token } = req.cookies
+
+  if (token) {
+    const decoded = jwt.verify(token, config.JWT_SECRET)
+    req.user = await User.findById(decoded._id)
+    // console.log(req.user);
+    next()
+  }
+  else {
+    res.render('login')
+  }
+}
+
+app.get("/", isAuthenticated, (req, res) => {
+  const {name} = req.user
+  res.render("dashboard", { name })
 })
 
 app.post("/signup", async (req, res) => {
@@ -45,20 +61,37 @@ app.post("/login", async (req, res) => {
       )
       if (isPasswordMatch) {
         isUserExist.password = undefined
-        res.json({
-          success: true,
-          message: "successfully logged in",
-          isUserExist,
+
+        const token = jwt.sign({_id:isUserExist._id},config.JWT_SECRET)
+
+        res.cookie("token", token, {
+          httpOnly: true,
+          expires: new Date(Date.now() + 60 * 1000),
         })
-        return
+        return res.redirect("/dashboard")
+        
       }
-      res.json({ success: false, message: "incorrect email or password" })
-      return
+      return res.json({ success: false, message: "incorrect email or password" })
+      
     }
-    res.send({ success: false, message: "please signup first" })
+    return res.json({ success: false, message: "please signup first" })
   } catch (error) {
     console.log(error)
+    throw error
   }
+})
+
+app.get("/dashboard", isAuthenticated, (req, res) => {
+  const {name} = req.user
+  res.render("dashboard",{name})
+})
+
+app.post("/logout", (req, res) => {
+  res.cookie("token", null, {
+    httpOnly: true,
+    expires: new Date(Date.now()),
+  })
+  res.redirect("/")
 })
 
 app.listen(config.PORT, () => {
