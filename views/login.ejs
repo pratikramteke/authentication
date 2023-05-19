@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="./style.css" />
   </head>
   <body>
     <form class="form" action="/login" method="post">
@@ -33,6 +33,7 @@
         <div class="cut cut-short"></div>
         <label for="password" class="placeholder">Password</label>
       </div>
+      <p><%= locals.message %></p>
       <button type="text" class="submit">Login</button>
       <br /><br />
       <a class="signup" href="/signup">Sign Up</a>

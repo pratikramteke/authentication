@@ -6,11 +6,15 @@ body {
   height: 100vh;
 }
 
+p {
+  color: #eee
+}
+
 .form {
   background-color: #15172b;
   border-radius: 20px;
   box-sizing: border-box;
-  height: 500px;
+  /* height: 550px; */
   padding: 20px;
   width: 320px;
 }
@@ -113,7 +117,7 @@ body {
   cursor: pointer;
   font-size: 18px;
   height: 50px;
-  margin-top: 38px;
+  /* margin-top: 38px; */
   text-align: center;
   width: 100%;
 }
@@ -124,4 +128,5 @@ body {
 
 .signup {
   font-size: large;
+  color: white;
 }

@@ -17,13 +17,14 @@ export const signUp = async (req, res) => {
     const { name, email, password } = req.body
 
     if (!name || !email || !password) {
-      return res.json({ success: false, message: "fields should not be empty" })
+      return res.render("signup", { message: "fields should not be empty" })
     }
 
     const isUserExist = await User.findOne({ email })
     if (isUserExist) {
-      res.json({ success: false, message: "user already exists login please" })
-      return
+      return res.render("signup", {
+        message: "user already exists login please",
+      })
     }
 
     const hashedPassword = await bcryptjs.hash(password, 10)
@@ -48,6 +49,10 @@ export const login = async (req, res) => {
   try {
     const { email, password } = req.body
 
+    if (!email || !password) {
+      return res.render("login", { message: "fields should not be empty" })
+    }
+
     const isUserExist = await User.findOne({ email }).select("+password")
     if (isUserExist) {
       const isPasswordMatch = await bcryptjs.compare(
@@ -65,12 +70,9 @@ export const login = async (req, res) => {
         })
         return res.redirect("/dashboard")
       }
-      return res.json({
-        success: false,
-        message: "incorrect email or password",
-      })
+      return res.render("login", { message: "incorrect email or password" })
     }
-    return res.json({ success: false, message: "please signup first" })
+    return res.render("login", { message: "please signup first" })
   } catch (error) {
     console.log(error)
     throw error
